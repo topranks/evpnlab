@@ -1,0 +1,28 @@
+name: evpnlab
+mgmt:
+  network: evpnlab
+  bridge: clab
+topology:
+  nodes:
+    leaf1:
+      kind: vr-vqfx
+      image: vrnetlab/vr-vqfx:20.2R1.10
+    leaf2:
+      kind: vr-vqfx
+      image: vrnetlab/vr-vqfx:20.2R1.10
+    leaf3:
+      kind: vr-vqfx
+      image: vrnetlab/vr-vqfx:20.2R1.10
+    spine1:
+      kind: vr-vqfx
+      image: vrnetlab/vr-vqfx:20.2R1.10
+    spine2:
+      kind: vr-vqfx
+      image: vrnetlab/vr-vqfx:20.2R1.10
+  links:
+    - endpoints: ["leaf1:eth1", "spine1:eth1"]
+    - endpoints: ["leaf1:eth2", "spine2:eth1"]
+    - endpoints: ["leaf2:eth1", "spine1:eth2"]
+    - endpoints: ["leaf2:eth2", "spine2:eth2"]
+    - endpoints: ["leaf3:eth1", "spine1:eth3"]
+    - endpoints: ["leaf3:eth2", "spine2:eth3"]
