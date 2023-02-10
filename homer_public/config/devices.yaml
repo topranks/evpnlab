@@ -1,0 +1,26 @@
+SPINE1:
+  role: spine
+  site: evpnlab
+  config: {}
+
+SPINE2:
+  role: spine
+  site: evpnlab
+  config: {}
+
+LEAF1:
+  role: leaf
+  site: evpnlab
+  config: {}
+      
+LEAF2:
+  role: leaf
+  site: evpnlab
+  config: {}
+
+LEAF3:
+  role: leaf
+  site: evpnlab
+  config: {}      
+    
+    

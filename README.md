@@ -1,8 +1,17 @@
 To start:
 
-SSH on and add public key:
+Modify Homer so we can use the ipaddr module from Ansible
+
+pip3 install ansible
+
+Then insert into the homer templates.py file:
 ```
-set system login user cmooney authentication ssh-ed25519 "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH8GQKaT22CZdxJcpLNsq1LYm9bTeI7xnblYrrx8HXQH officepc" 
+from ansible_collections.ansible.utils.plugins.filter import ipaddr
+```
+
+And add this line at the end of the __init__ function in the Renderer class:
+```
+        self._env.filters.update(ipaddr.FilterModule().filters())
 ```
 
 

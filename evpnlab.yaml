@@ -19,6 +19,22 @@ topology:
     spine2:
       kind: vr-vqfx
       image: vrnetlab/vr-vqfx:20.2R1.10
+    server1:
+      image: debian:clab
+      kind: linux
+      binds:
+      - ~/.ssh/id_ed25519.pub:/root/.ssh/authorized_keys
+    server2:
+      binds:
+      - ~/.ssh/id_ed25519.pub:/root/.ssh/authorized_keys
+      image: debian:clab
+      kind: linux
+    server3:
+      binds:
+      - ~/.ssh/id_ed25519.pub:/root/.ssh/authorized_keys
+      image: debian:clab
+      kind: linux
+
   links:
     - endpoints: ["leaf1:eth1", "spine1:eth1"]
     - endpoints: ["leaf1:eth2", "spine2:eth1"]
@@ -26,3 +42,7 @@ topology:
     - endpoints: ["leaf2:eth2", "spine2:eth2"]
     - endpoints: ["leaf3:eth1", "spine1:eth3"]
     - endpoints: ["leaf3:eth2", "spine2:eth3"]
+    - endpoints: ["server1:eth1", "leaf1:eth3"]
+    - endpoints: ["server2:eth1", "leaf2:eth3"]
+    - endpoints: ["server3:eth1", "leaf3:eth3"]
+
