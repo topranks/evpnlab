@@ -240,10 +240,6 @@ To connect to any of the 'server' containers run bash in them with docker:
 ```
 cathal@officepc:~/evpnlab$ docker exec -it clab-evpnlab-server1 bash
 root@server1:/# 
-root@server1:/# ip -br addr show 
-lo               UNKNOWN        127.0.0.1/8 ::1/128 
-eth0@if170       UP             172.20.20.2/24 2001:172:20:20::2/64 fe80::42:acff:fe14:1402/64 
-eth1@if201       UP             fe80::a8c1:abff:fe6f:256a/64 
 ```
 
 Interfaces, vlans or whatever can be configured using stardard ip command syntax.  For example:
@@ -263,3 +259,15 @@ Server3:
 ip addr add 198.18.200.13/24 dev eth1
 ip route add 198.18.0.0/16 via 198.18.200.254
 ```
+
+Networking should work if all going well!
+```
+root@server3:~# mtr -b -r -c 3 198.18.100.11
+Start: 2023-02-10T12:38:03+0000
+HOST: server3                     Loss%   Snt   Last   Avg  Best  Wrst StDev
+  1.|-- 198.18.200.254             0.0%     3  101.3 123.1 101.2 166.7  37.8
+  2.|-- ???                       100.0     3    0.0   0.0   0.0   0.0   0.0
+  3.|-- 198.18.100.11              0.0%     3  134.4 280.6 105.9 601.4 278.2
+```
+
+NOTE: Lack of response from hop2 in the above (leaf1) happens with vQFX.  In production on QFX5120 devices this is not observed with the same configuration, a response is generated from the irb.100 unicast address and is received by the server doing the traceroute.
