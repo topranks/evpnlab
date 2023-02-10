@@ -30,18 +30,15 @@ parser.add_argument('-k', '--key', help='SSH pubkey for user', default='ssh-ed25
 args = parser.parse_args()
 
 def main():
-    """ Removes all the vQFX junk that is there at startup. """
-
-    # add_user_config()
-
+    """ Adds a user with SSH key to vqfx devices found by running clab inspect """
     devices = get_clab_vqfx()
-
     for device_name, dev_conf in devices.items():
         add_user_config(device_name, dev_conf['ip'])
 
-        vqfx = get_junos_dev(dev_conf['ip'])
-        clear_int_config(vqfx)
-        vqfx.close()
+        # These functions remove spurious interface config - but homer will do that anyway
+        #vqfx = get_junos_dev(dev_conf['ip'])
+        #clear_int_config(vqfx)
+        #vqfx.close()
 
 
 def get_clab_vqfx():
