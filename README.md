@@ -1,32 +1,28 @@
 # evpnlab
 
+![evpnlab topology](https://raw.githubusercontent.com/topranks/evpnlab/main/diagram.png)
+
 This is a Juniper lab to test some EVPN/VXLAN stuff built using vQFX running on qemu on Linux, orchestrated with [containerlab](https://containerlab.srlinux.dev/).  The vQFX configuration is automated through [PyEZ](https://github.com/Juniper/py-junos-eznc) and [Homer](https://doc.wikimedia.org/homer/master/introduction.html)
 
 ## Installation
 
 The lab is designed to be run on Linux.  As it uses virtual machines to emualte the Juniper devices it is better running directly on bare metal, however it should in theory work in a VM as long as nested virtualization is enabled.
 
-#### Install Docker
+#### 1. Install Docker
 
 Installer docker using [their instructions](https://docs.docker.com/engine/install/).
 
 
-#### Create docker container image that runs the vQFX VMs
+#### 2. Create docker container image that runs the vQFX VMs
 
 Firstly you'll need to have Juniper's [vQFX](https://www.juniper.net/us/en/dm/free-vqfx10000-software.html) images downloaded.  The vQFX runs as two separate virtual machines, one which takes care of packet forwarding (PFE) and one that manages the device's control plane (vCP).
 
 To run vQFX in containerlab we need to wrap the VM execution in a container that can be run with docker (see [here](https://containerlab.dev/manual/vrnetlab/)).  Once you have the vQFX qemu images you can create this container by using [vrnetlab](https://github.com/vrnetlab/vrnetlab) following the instructions below:
 
-[Juniper vQFX and Containerlab](https://www.theasciiconstruct.com/post/junos-vqfx-containerlab/)
+[Juniper vQFX and Containerlab Tutorial](https://www.theasciiconstruct.com/post/junos-vqfx-containerlab/)
 
-When complete you should see the vqfx container image when running 'docker ps'
-```
-cathal@officepc:~$ sudo docker images 
-REPOSITORY           TAG             IMAGE ID       CREATED         SIZE
-vrnetlab/vr-vqfx     20.2R1.10       c4402f8ebcbd   24 hours ago    1.83GB
-```
 
-#### Create docker container to simulate connected servers
+#### 3. Create docker container to simulate connected servers
 
 Each of the LEAF switches in the lab has a test server connected.  These are simulated using a docker container.  Any kind of Linux container will work, I typically use "debian:stable-slim".  
 
@@ -53,11 +49,11 @@ root@debiantemp:~#
 
 Either way the containerlab topology file will run an image called "debian:clab".  The above process creates an image with this name, if you use another container you can alias it to this name using "docker tag <image_id> debian:clab".
 
-#### Install containerlab
+#### 4. Install containerlab
 
 Follow the instructions to [install containerlab](https://containerlab.dev/install/)
 
-#### Install Homer
+#### 5. Install Homer
 
 Install WMF Homer and Ansible using pip:
 ```
@@ -80,7 +76,7 @@ And then add this line at the end of the __init__ function in the Renderer class
         self._env.filters.update(ipaddr.FilterModule().filters())
 ```
 
-#### Clone this repo
+#### 6. Clone this repo
 
 Clone this repo to your machine:
 ```
@@ -88,7 +84,7 @@ git clone https://github.com/topranks/evpnlab.git
 cd evpnlab
 ```
 
-#### Run the lab
+#### 7. Run the lab
 
 Before running the lab check the docker images are look correct, you should at least have two with names as shown below:
 ```
@@ -154,37 +150,15 @@ root@vqfx-re:RE:0% cli
 root@vqfx-re> 
 
 {master:0}
-root@vqfx-re> show interfaces terse | match "xe-" 
+root@vqfx-re> show interfaces terse | match "xe-0/0/0" 
 xe-0/0/0                up    up
 xe-0/0/0.0              up    up   inet    
-xe-0/0/1                up    up
-xe-0/0/1.0              up    up   inet    
-xe-0/0/2                up    up
-xe-0/0/2.0              up    up   inet    
-xe-0/0/3                up    up
-xe-0/0/3.0              up    up   inet    
-xe-0/0/4                up    up
-xe-0/0/4.0              up    up   inet    
-xe-0/0/5                up    up
-xe-0/0/5.0              up    up   inet    
-xe-0/0/6                up    up
-xe-0/0/6.0              up    up   inet    
-xe-0/0/7                up    up
-xe-0/0/7.0              up    up   inet    
-xe-0/0/8                up    up
-xe-0/0/8.0              up    up   inet    
-xe-0/0/9                up    up
-xe-0/0/9.0              up    up   inet    
-xe-0/0/10               up    up
-xe-0/0/10.0             up    up   inet    
-xe-0/0/11               up    up
-xe-0/0/11.0             up    up   inet    
 
 {master:0}
 root@vqfx-re> 
 ```
 
-#### Add JunOS user and SSH key to devices, and remove junk interface config
+#### 8. Run script to add user to JunOS devices
 
 To use Homer we need to have passwordless SSH working.  The username for the user should match your shell username on the system you are using.  You need to add an SSH pubkey which this user has already added (via 'ssh-keygen -t ed25519' for example).
 
@@ -193,7 +167,6 @@ The included script will do this (run 'sudo false' first just cos):
 cathal@officepc:~/evpnlab$ sudo false
 [sudo] password for cathal: 
 cathal@officepc:~/evpnlab$ ./vqfx_prep.py --user cathal --key "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH8GQKaT22CZdxJcpLNsq1LYm9bTeI7xnblYrrx8HXQH cathal@officepc"
-cathal@officepc:~/evpnlab$ ./vqfx_prep.py
 Trying to conenct to leaf1 at 172.20.20.8... connected.
 Adding user cathal with CLI... done.
 Trying to commit config change removing interfaces (wait 20 sec)...  done.
@@ -215,7 +188,7 @@ Adding user cathal with CLI... done.
 Trying to commit config change removing interfaces (wait 20 sec)...  done.
 ```
 
-NOTE: This takes a *long* time.  For some reason the Juniper [StartShell](https://www.juniper.net/documentation/us/en/software/junos-pyez/junos-pyez-developer/topics/task/junos-pyez-program-shell-accessing.html) takes ages to run on the vQFX, at least on my system.  But it works ok.
+NOTE: This takes a *long* time.  For some reason the Juniper [StartShell](https://www.juniper.net/documentation/us/en/software/junos-pyez/junos-pyez-developer/topics/task/junos-pyez-program-shell-accessing.html) takes ages to run on the vQFX, at least on my system.  But it works ok, I need to revisit to see why it goes so slow.
 
 Once done verify you can SSH on without a password as the user you added:
 ```
@@ -226,9 +199,9 @@ Last login: Fri Feb 10 11:49:46 2023 from 10.0.0.2
 cathal@vqfx-re> 
 ```
 
-#### Add Homer confiuration file
+#### 9. Add Homer confiuration file
 
-You'll need to add a homer configuration file at **/etc/homer/config.yaml**, contents should be similar to below:
+You'll need to create a homer configuration file at **/etc/homer/config.yaml**, contents should be similar to below.  The critical part is that the path beside 'public:' points to the "homer_public" directory inside the evpnlab dir cloned from here.
 ```
 base_paths:
   # Base path of public configuration.
@@ -247,7 +220,7 @@ transports:
       - config will be applied to ports
 ```
 
-#### Run Homer to add configuration to JunOS devices
+#### 10. Run Homer to add configuration to JunOS devices
 ```
 homer '*' commit "Add config to lab devices"
 ```
@@ -261,7 +234,40 @@ Address          Interface              State           ID               Pri  De
 10.1.2.0         xe-0/0/1.0             Full            2.2.2.2          128    36
 ```
 
-#### Connect to servers
+#### 11. Connect to servers
 
 To connect to any of the 'server' containers run bash in them with docker:
 ```
+cathal@officepc:~/evpnlab$ docker exec -it clab-evpnlab-server1 bash
+root@server1:/# 
+```
+
+Interfaces, vlans or whatever can be configured using stardard ip command syntax.  For example:
+
+Server1:
+```
+ip addr add 198.18.100.11/24 dev eth1
+ip route add 198.18.0.0/16 via 198.18.100.254
+```
+Server2:
+```
+ip addr add 198.18.100.12/24 dev eth1
+ip route add 198.18.0.0/16 via 198.18.100.254
+```
+Server3:
+```
+ip addr add 198.18.200.13/24 dev eth1
+ip route add 198.18.0.0/16 via 198.18.200.254
+```
+
+Networking should work if all going well!
+```
+root@server3:~# mtr -b -r -c 3 198.18.100.11
+Start: 2023-02-10T12:38:03+0000
+HOST: server3                     Loss%   Snt   Last   Avg  Best  Wrst StDev
+  1.|-- 198.18.200.254             0.0%     3  101.3 123.1 101.2 166.7  37.8
+  2.|-- ???                       100.0     3    0.0   0.0   0.0   0.0   0.0
+  3.|-- 198.18.100.11              0.0%     3  134.4 280.6 105.9 601.4 278.2
+```
+
+NOTE: Lack of response from hop2 in the above (leaf1) happens with vQFX.  In production on QFX5120 devices this is not observed with the same configuration, a response is generated from the irb.100 unicast address and is received by the server doing the traceroute.
