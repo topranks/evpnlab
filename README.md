@@ -1,23 +1,25 @@
 # evpnlab
 
+![evpnlab topology](https://raw.githubusercontent.com/topranks/evpnlab/main/diagram.png)
+
 This is a Juniper lab to test some EVPN/VXLAN stuff built using vQFX running on qemu on Linux, orchestrated with [containerlab](https://containerlab.srlinux.dev/).  The vQFX configuration is automated through [PyEZ](https://github.com/Juniper/py-junos-eznc) and [Homer](https://doc.wikimedia.org/homer/master/introduction.html)
 
 ## Installation
 
 The lab is designed to be run on Linux.  As it uses virtual machines to emualte the Juniper devices it is better running directly on bare metal, however it should in theory work in a VM as long as nested virtualization is enabled.
 
-#### Install Docker
+#### 1. Install Docker
 
 Installer docker using [their instructions](https://docs.docker.com/engine/install/).
 
 
-#### Create docker container image that runs the vQFX VMs
+#### 2. Create docker container image that runs the vQFX VMs
 
 Firstly you'll need to have Juniper's [vQFX](https://www.juniper.net/us/en/dm/free-vqfx10000-software.html) images downloaded.  The vQFX runs as two separate virtual machines, one which takes care of packet forwarding (PFE) and one that manages the device's control plane (vCP).
 
 To run vQFX in containerlab we need to wrap the VM execution in a container that can be run with docker (see [here](https://containerlab.dev/manual/vrnetlab/)).  Once you have the vQFX qemu images you can create this container by using [vrnetlab](https://github.com/vrnetlab/vrnetlab) following the instructions below:
 
-[Juniper vQFX and Containerlab](https://www.theasciiconstruct.com/post/junos-vqfx-containerlab/)
+[Juniper vQFX and Containerlab Tutorial](https://www.theasciiconstruct.com/post/junos-vqfx-containerlab/)
 
 When complete you should see the vqfx container image when running 'docker ps'
 ```
@@ -26,7 +28,7 @@ REPOSITORY           TAG             IMAGE ID       CREATED         SIZE
 vrnetlab/vr-vqfx     20.2R1.10       c4402f8ebcbd   24 hours ago    1.83GB
 ```
 
-#### Create docker container to simulate connected servers
+#### 3. Create docker container to simulate connected servers
 
 Each of the LEAF switches in the lab has a test server connected.  These are simulated using a docker container.  Any kind of Linux container will work, I typically use "debian:stable-slim".  
 
@@ -53,11 +55,11 @@ root@debiantemp:~#
 
 Either way the containerlab topology file will run an image called "debian:clab".  The above process creates an image with this name, if you use another container you can alias it to this name using "docker tag <image_id> debian:clab".
 
-#### Install containerlab
+#### 4. Install containerlab
 
 Follow the instructions to [install containerlab](https://containerlab.dev/install/)
 
-#### Install Homer
+#### 5. Install Homer
 
 Install WMF Homer and Ansible using pip:
 ```
@@ -80,7 +82,7 @@ And then add this line at the end of the __init__ function in the Renderer class
         self._env.filters.update(ipaddr.FilterModule().filters())
 ```
 
-#### Clone this repo
+#### 6. Clone this repo
 
 Clone this repo to your machine:
 ```
@@ -88,7 +90,7 @@ git clone https://github.com/topranks/evpnlab.git
 cd evpnlab
 ```
 
-#### Run the lab
+#### 7. Run the lab
 
 Before running the lab check the docker images are look correct, you should at least have two with names as shown below:
 ```
@@ -184,7 +186,7 @@ xe-0/0/11.0             up    up   inet
 root@vqfx-re> 
 ```
 
-#### Add JunOS user and SSH key to devices, and remove junk interface config
+#### 8. Add JunOS user and SSH key to devices, and remove junk interface config
 
 To use Homer we need to have passwordless SSH working.  The username for the user should match your shell username on the system you are using.  You need to add an SSH pubkey which this user has already added (via 'ssh-keygen -t ed25519' for example).
 
@@ -226,7 +228,7 @@ Last login: Fri Feb 10 11:49:46 2023 from 10.0.0.2
 cathal@vqfx-re> 
 ```
 
-#### Add Homer confiuration file
+#### 9. Add Homer confiuration file
 
 You'll need to add a homer configuration file at **/etc/homer/config.yaml**, contents should be similar to below:
 ```
@@ -247,7 +249,7 @@ transports:
       - config will be applied to ports
 ```
 
-#### Run Homer to add configuration to JunOS devices
+#### 10. Run Homer to add configuration to JunOS devices
 ```
 homer '*' commit "Add config to lab devices"
 ```
@@ -265,3 +267,12 @@ Address          Interface              State           ID               Pri  De
 
 To connect to any of the 'server' containers run bash in them with docker:
 ```
+cathal@officepc:~/evpnlab$ docker exec -it clab-evpnlab-server1 bash
+root@server1:/# 
+root@server1:/# ip -br addr show 
+lo               UNKNOWN        127.0.0.1/8 ::1/128 
+eth0@if170       UP             172.20.20.2/24 2001:172:20:20::2/64 fe80::42:acff:fe14:1402/64 
+eth1@if201       UP             fe80::a8c1:abff:fe6f:256a/64 
+```
+
+Interfaces, vlans or whatever can be configured using stardard ip command syntax.
