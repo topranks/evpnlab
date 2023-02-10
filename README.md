@@ -167,7 +167,6 @@ The included script will do this (run 'sudo false' first just cos):
 cathal@officepc:~/evpnlab$ sudo false
 [sudo] password for cathal: 
 cathal@officepc:~/evpnlab$ ./vqfx_prep.py --user cathal --key "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH8GQKaT22CZdxJcpLNsq1LYm9bTeI7xnblYrrx8HXQH cathal@officepc"
-cathal@officepc:~/evpnlab$ ./vqfx_prep.py
 Trying to conenct to leaf1 at 172.20.20.8... connected.
 Adding user cathal with CLI... done.
 Trying to commit config change removing interfaces (wait 20 sec)...  done.
