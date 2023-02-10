@@ -190,13 +190,11 @@ transports:
 
 To use Homer we need to have passwordless SSH working, so we need to add a user and SSH public key for them.  The username should be the same as on the local system where you're running homer.  That user will need an ed25519 ssh keypair in ~/.ssh/ already, if not create one with 'ssh-keygen -t ed25519'.
 
-The included script will add the user to the JunOS devices along with the public key:
+The included script will add a user to all containerlab vQFX devices it finds:
 ```
 cathal@officepc:~/evpnlab$ sudo ./vqfx_prep.py --user cathal --key "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH8GQKaT22CZdxJcpLNsq1LYm9bTeI7xnblYrrx8HXQH cathal@officepc"
 Trying to conenct to leaf1 at 172.20.20.8... connected.
 Adding user cathal with CLI... done.
-Trying to commit config change removing interfaces (wait 20 sec)...  done.
-
 ```
 
 NOTE: This takes a *long* time.  For some reason the Juniper [StartShell](https://www.juniper.net/documentation/us/en/software/junos-pyez/junos-pyez-developer/topics/task/junos-pyez-program-shell-accessing.html) takes ages to run on the vQFX, at least on my system.  But it works ok, I need to revisit to see why it goes so slow.
