@@ -4,7 +4,7 @@
 
 This is a Juniper lab to test some EVPN/VXLAN stuff built using vQFX running on qemu on Linux, orchestrated with [containerlab](https://containerlab.srlinux.dev/).  The vQFX configuration is automated through [PyEZ](https://github.com/Juniper/py-junos-eznc) and [Homer](https://doc.wikimedia.org/homer/master/introduction.html)
 
-## Installation
+## Install & Run Lab
 
 The lab is designed to be run on Linux.  As it uses virtual machines to emualte the Juniper devices it is better running directly on bare metal, however it should in theory work in a VM as long as nested virtualization is enabled.
 
@@ -132,7 +132,11 @@ xe-0/0/0                up    up
 xe-0/0/0.0              up    up   inet    
 ```
 
-#### 7. Run script to add user to JunOS devices
+At this point the lab is up and running, and we can configure the nodes.
+
+## Configure the devices using Homer
+
+#### 1. Run script to add user to JunOS devices
 
 To use Homer we need to have passwordless SSH working, so we need to add a user and SSH public key for them.  The username should be the same as on the local system where you're running homer.  That user will need an ed25519 ssh keypair in ~/.ssh/ already, if not create one with 'ssh-keygen -t ed25519'.
 
@@ -158,7 +162,7 @@ cathal@vqfx-re>
 
 At this point the lab is up and running, follow the next steps to add the config defined in the homer_public dir using Homer.
 
-#### 8. Install Homer
+#### 2. Install Homer
 
 Install WMF Homer and Ansible using pip:
 ```
@@ -181,7 +185,7 @@ And then add this line at the end of the __init__ function in the Renderer class
         self._env.filters.update(ipaddr.FilterModule().filters())
 ```
 
-#### 9. Add Homer confiuration file
+#### 3. Add Homer confiuration file
 
 You'll need to create a homer configuration file at **/etc/homer/config.yaml**, contents should be similar to below.  The critical part is that the path beside 'public:' points to the "homer_public" directory inside the evpnlab dir cloned from here.
 ```yaml
@@ -202,7 +206,7 @@ transports:
       - config will be applied to ports
 ```
 
-#### 10. Run Homer to add configuration to JunOS devices
+#### 4. Run Homer to add configuration to JunOS devices
 ```
 homer '*' commit "Add config to lab devices"
 ```
@@ -216,7 +220,7 @@ Address          Interface              State           ID               Pri  De
 10.1.2.0         xe-0/0/1.0             Full            2.2.2.2          128    36
 ```
 
-#### 11. Connect to servers
+#### 5. Connect to servers
 
 To connect to any of the 'server' containers run bash in them with docker:
 ```
