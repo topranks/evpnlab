@@ -134,6 +134,12 @@ xe-0/0/0.0              up    up   inet
 
 At this point the lab is up and running, and we can configure the nodes.
 
+### A note on interface naming
+
+Containerlab / vrnetlab requires us to use interface names in the form "ethX".  In the vrnetlab containers set up a TC rule to map traffic from the first of these (eth0) to the "em0" interface on the vQFX vCP.  This is used for management access.
+
+The 'eth1' interface in each container is mapped to 'xe-0/0/0' on the vQFX using a similar rule, 'eth2' is mapped to 'xe-0/0/1', and so on.  For the containerlab topology file we need to use the "ethX" interface naming, when we configure with Homer or something else that is talking to JunOS we instead need to use the 'xe-0/0/x' convention.
+
 ## Configure vQFX devices using Homer
 
 #### 1. Run script to add user to JunOS devices
