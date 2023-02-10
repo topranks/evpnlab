@@ -21,12 +21,6 @@ To run vQFX in containerlab we need to wrap the VM execution in a container that
 
 [Juniper vQFX and Containerlab Tutorial](https://www.theasciiconstruct.com/post/junos-vqfx-containerlab/)
 
-When complete you should see the vqfx container image when running 'docker ps'
-```
-cathal@officepc:~$ sudo docker images 
-REPOSITORY           TAG             IMAGE ID       CREATED         SIZE
-vrnetlab/vr-vqfx     20.2R1.10       c4402f8ebcbd   24 hours ago    1.83GB
-```
 
 #### 3. Create docker container to simulate connected servers
 
@@ -156,31 +150,9 @@ root@vqfx-re:RE:0% cli
 root@vqfx-re> 
 
 {master:0}
-root@vqfx-re> show interfaces terse | match "xe-" 
+root@vqfx-re> show interfaces terse | match "xe-0/0/0" 
 xe-0/0/0                up    up
 xe-0/0/0.0              up    up   inet    
-xe-0/0/1                up    up
-xe-0/0/1.0              up    up   inet    
-xe-0/0/2                up    up
-xe-0/0/2.0              up    up   inet    
-xe-0/0/3                up    up
-xe-0/0/3.0              up    up   inet    
-xe-0/0/4                up    up
-xe-0/0/4.0              up    up   inet    
-xe-0/0/5                up    up
-xe-0/0/5.0              up    up   inet    
-xe-0/0/6                up    up
-xe-0/0/6.0              up    up   inet    
-xe-0/0/7                up    up
-xe-0/0/7.0              up    up   inet    
-xe-0/0/8                up    up
-xe-0/0/8.0              up    up   inet    
-xe-0/0/9                up    up
-xe-0/0/9.0              up    up   inet    
-xe-0/0/10               up    up
-xe-0/0/10.0             up    up   inet    
-xe-0/0/11               up    up
-xe-0/0/11.0             up    up   inet    
 
 {master:0}
 root@vqfx-re> 
@@ -217,7 +189,7 @@ Adding user cathal with CLI... done.
 Trying to commit config change removing interfaces (wait 20 sec)...  done.
 ```
 
-NOTE: This takes a *long* time.  For some reason the Juniper [StartShell](https://www.juniper.net/documentation/us/en/software/junos-pyez/junos-pyez-developer/topics/task/junos-pyez-program-shell-accessing.html) takes ages to run on the vQFX, at least on my system.  But it works ok.
+NOTE: This takes a *long* time.  For some reason the Juniper [StartShell](https://www.juniper.net/documentation/us/en/software/junos-pyez/junos-pyez-developer/topics/task/junos-pyez-program-shell-accessing.html) takes ages to run on the vQFX, at least on my system.  But it works ok, I need to revisit to see why it goes so slow.
 
 Once done verify you can SSH on without a password as the user you added:
 ```
@@ -230,7 +202,7 @@ cathal@vqfx-re>
 
 #### 9. Add Homer confiuration file
 
-You'll need to add a homer configuration file at **/etc/homer/config.yaml**, contents should be similar to below, the critical part is that the path beside 'public:' points to the "homer_public" directory inside the evpnlab dir cloned from here.
+You'll need to create a homer configuration file at **/etc/homer/config.yaml**, contents should be similar to below.  The critical part is that the path beside 'public:' points to the "homer_public" directory inside the evpnlab dir cloned from here.
 ```
 base_paths:
   # Base path of public configuration.
