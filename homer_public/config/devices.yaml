@@ -11,16 +11,43 @@ SPINE2:
 LEAF1:
   role: leaf
   site: evpnlab
-  config: {}
+  config:
+    vlan_ports:
+      access:
+        "xe-0/0/2":
+          descr: server1
+          vlan: VLAN100
+    vlan_ints:
+      VLAN100:
+        ipv4: "198.18.100.1/24"
+        ipv6: "2001:0470:6a7f:0100::1/64"
       
 LEAF2:
   role: leaf
   site: evpnlab
-  config: {}
+  config:
+    vlan_ports:
+      access:
+        "xe-0/0/2":
+          descr: server2
+          vlan: VLAN100
+    vlan_ints:
+      VLAN100:
+        ipv4: "198.18.100.2/24"
+        ipv6: "2001:0470:6a7f:0100::2/64"
 
 LEAF3:
   role: leaf
   site: evpnlab
-  config: {}      
+  config:
+    vlan_ports:
+      access:
+        "xe-0/0/2":
+          descr: server3
+          vlan: VLAN200
+    vlan_ints:
+      VLAN200:
+        ipv4: "198.18.200.254/24"
+        ipv6: "2001:0470:6a7f:0200::254/64"
     
     

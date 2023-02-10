@@ -1,0 +1,96 @@
+set interfaces xe-0/0/0 description "LEAF1 xe-0/0/1"
+set interfaces xe-0/0/0 unit 0 family inet address 10.1.2.0/31
+set interfaces xe-0/0/0 unit 0 family inet6
+set interfaces xe-0/0/1 description "LEAF2 xe-0/0/1"
+set interfaces xe-0/0/1 unit 0 family inet address 10.2.2.0/31
+set interfaces xe-0/0/1 unit 0 family inet6
+set interfaces xe-0/0/2 description "LEAF3 xe-0/0/1"
+set interfaces xe-0/0/2 unit 0 family inet address 10.3.2.0/31
+set interfaces xe-0/0/2 unit 0 family inet6
+set interfaces em0 unit 0 family inet dhcp
+set interfaces em1 description "LINK TO vQFX PFE"
+set interfaces em1 unit 0 family inet address 169.254.0.2/24
+set interfaces lo0 unit 0 description "System Loopback"
+set interfaces lo0 unit 0 family inet address 2.2.2.2/32
+set forwarding-options storm-control-profiles default all
+set forwarding-options vxlan-routing overlay-ecmp
+set policy-options policy-statement DEFAULT_EVPN term DEFAULT_V4 from protocol evpn
+set policy-options policy-statement DEFAULT_EVPN term DEFAULT_V4 from route-filter 0.0.0.0/0 exact
+set policy-options policy-statement DEFAULT_EVPN term DEFAULT_V4 then accept
+set policy-options policy-statement DEFAULT_EVPN term DEFAULT_V6 from protocol evpn
+set policy-options policy-statement DEFAULT_EVPN term DEFAULT_V6 from route-filter ::/0 exact
+set policy-options policy-statement DEFAULT_EVPN term DEFAULT_V6 then accept
+set policy-options policy-statement ECMP_ON then load-balance per-packet
+set policy-options policy-statement EXPORT_EVPN term TERM_1 from protocol evpn
+set policy-options policy-statement EXPORT_EVPN term TERM_1 from route-filter 0.0.0.0/0 prefix-length-range /32-/32
+set policy-options policy-statement EXPORT_EVPN term TERM_1 then accept
+set policy-options policy-statement EXPORT_EVPN term TERM_2 from protocol direct
+set policy-options policy-statement EXPORT_EVPN term TERM_2 then accept
+set policy-options policy-statement EXPORT_EVPN term TERM_3 from protocol static
+set policy-options policy-statement EXPORT_EVPN term TERM_3 then accept
+set policy-options policy-statement EXPORT_EVPN term TERM_4 from family inet6
+set policy-options policy-statement EXPORT_EVPN term TERM_4 from protocol evpn
+set policy-options policy-statement EXPORT_EVPN term TERM_4 from route-filter 0::0/0 prefix-length-range /128-/128
+set policy-options policy-statement EXPORT_EVPN term TERM_4 then accept
+set policy-options policy-statement EXPORT_EVPN term TERM_5 from protocol bgp
+set policy-options policy-statement EXPORT_EVPN term TERM_5 then accept
+set policy-options policy-statement EXPORT_EVPN term TERM_6 from protocol local
+set policy-options policy-statement EXPORT_EVPN term TERM_6 then accept
+set policy-options policy-statement EXTV6_OUT term EVPN_LVS from protocol evpn
+set policy-options policy-statement EXTV6_OUT term EVPN_LVS from as-path LOCAL_LVS
+set policy-options policy-statement EXTV6_OUT term EVPN_LVS then accept
+set policy-options policy-statement EXTV6_OUT term EVPN_NETWORKS from protocol evpn
+set policy-options policy-statement EXTV6_OUT term EVPN_NETWORKS from route-filter ::/0 prefix-length-range /0-/127
+set policy-options policy-statement EXTV6_OUT term EVPN_NETWORKS then accept
+set policy-options policy-statement EXT_OUT term EVPN_LVS from protocol evpn
+set policy-options policy-statement EXT_OUT term EVPN_LVS from as-path LOCAL_LVS
+set policy-options policy-statement EXT_OUT term EVPN_LVS then accept
+set policy-options policy-statement EXT_OUT term EVPN_NETWORKS from protocol evpn
+set policy-options policy-statement EXT_OUT term EVPN_NETWORKS from route-filter 0.0.0.0/0 prefix-length-range /0-/29
+set policy-options policy-statement EXT_OUT term EVPN_NETWORKS then accept
+set policy-options policy-statement NONE then reject
+set policy-options as-path LOCAL_LVS "^64600$"
+set firewall family inet filter BLOCK1111 term BLOCK1111 from destination-address 1.1.1.1/32
+set firewall family inet filter BLOCK1111 term BLOCK1111 then reject
+set firewall family inet6 filter BLOCKUS term BLOCKUS from destination-address 2605:3a40:3::1fa/128
+set firewall family inet6 filter BLOCKUS term BLOCKUS then reject
+set routing-options forwarding-table export ECMP_ON
+set routing-options forwarding-table chained-composite-next-hop ingress evpn
+set routing-options router-id 2.2.2.2
+set routing-options autonomous-system 65187
+set protocols ospf area 0.0.0.0 interface xe-0/0/0.0 interface-type p2p
+set protocols ospf area 0.0.0.0 interface xe-0/0/1.0 interface-type p2p
+set protocols ospf area 0.0.0.0 interface xe-0/0/2.0 interface-type p2p
+set protocols ospf area 0.0.0.0 interface lo0.0 passive
+set protocols evpn encapsulation vxlan
+set protocols evpn multicast-mode ingress-replication
+set protocols evpn extended-vni-list all
+set protocols bgp group EVPN_RR_CLIENTS type internal
+set protocols bgp group EVPN_RR_CLIENTS local-address 2.2.2.2
+set protocols bgp group EVPN_RR_CLIENTS family evpn signaling
+set protocols bgp group EVPN_RR_CLIENTS cluster 1.1.1.1
+set protocols bgp group EVPN_RR_CLIENTS multipath
+set protocols bgp group EVPN_RR_CLIENTS bfd-liveness-detection minimum-interval 30000
+set protocols bgp group EVPN_RR_CLIENTS bfd-liveness-detection multiplier 3
+set protocols bgp group EVPN_RR_CLIENTS bfd-liveness-detection session-mode automatic
+set protocols bgp group EVPN_RR_CLIENTS neighbor 11.11.11.11
+set protocols bgp group EVPN_RR_CLIENTS neighbor 12.12.12.12
+set protocols bgp group EVPN_RR_CLIENTS neighbor 13.13.13.13
+set protocols bgp group EVPN_RR_CLIENTS neighbor 14.14.14.14
+set protocols bgp group EVPN_RR_MESH type internal
+set protocols bgp group EVPN_RR_MESH local-address 2.2.2.2
+set protocols bgp group EVPN_RR_MESH family evpn signaling
+set protocols bgp group EVPN_RR_MESH multipath
+set protocols bgp group EVPN_RR_MESH bfd-liveness-detection minimum-interval 30000
+set protocols bgp group EVPN_RR_MESH bfd-liveness-detection multiplier 3
+set protocols bgp group EVPN_RR_MESH bfd-liveness-detection session-mode automatic
+set protocols bgp group EVPN_RR_MESH neighbor 1.1.1.1
+set protocols l2-learning global-mac-table-aging-time 1200
+set protocols l2-learning global-mac-ip-table-aging-time 600
+set protocols lldp interface all
+set protocols igmp-snooping vlan default
+set switch-options vtep-source-interface lo0.0
+set switch-options route-distinguisher 2.2.2.2:65187
+set switch-options vrf-target target:65187:9999
+set switch-options vrf-target auto
+set vlans default vlan-id 1
