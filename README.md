@@ -47,7 +47,7 @@ sha256:3229de033420148cbbbbce37d5f1415719c173916bea40563a0e5873e483ca08
 root@debiantemp:~# 
 ```
 
-Either way the containerlab topology file will run an image called "debian:clab".  The above process creates an image with this name, if you use another container you can alias it to this name using "docker tag <image_id> debian:clab".
+Either way the containerlab topology file will run an image called "**debian:clab**".  The above process creates an image with this name, if you use another container you can alias it to this name using "docker tag <image_id> debian:clab".
 
 #### 4. Install containerlab
 
@@ -60,7 +60,7 @@ Install WMF Homer and Ansible using pip:
 pip3 install homer ansible
 ```
 
-Ansible isn't used in this project, however the Ansible-provided 'ipaddr' filter for Jinja2 templating is used.  This is a very useful tool when using Homer without the WMF Netbox plugin (which transforms data in advance for use with templates).
+Ansible isn't used in this project, however the Ansible-provided 'ipaddr' filter for Jinja2 templating is used.  This is a very useful tool when using Homer only with YAML files (i.e. without the WMF Netbox plugin or similar which can transforms data in advance for use with templates).
 
 TODO: Create fork of Homer which includes the ipaddr module
 
