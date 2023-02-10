@@ -134,7 +134,7 @@ xe-0/0/0.0              up    up   inet
 
 At this point the lab is up and running, and we can configure the nodes.
 
-## Configure the devices using Homer
+## Configure vQFX devices using Homer
 
 #### 1. Run script to add user to JunOS devices
 
