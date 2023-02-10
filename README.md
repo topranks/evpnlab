@@ -66,13 +66,13 @@ TODO: Create fork of Homer which includes the ipaddr module
 
 Until that's done we need to change Homer to import the ipaddr module and make it available to plugins.  To do so locate the "tempaltes.py" Homer file on your system and add this to the top:
 
-```
+```python
 from ansible_collections.ansible.utils.plugins.filter import ipaddr
 ```
 
 And then add this line at the end of the __init__ function in the Renderer class:
 
-```
+```python
         self._env.filters.update(ipaddr.FilterModule().filters())
 ```
 
@@ -202,7 +202,7 @@ cathal@vqfx-re>
 #### 9. Add Homer confiuration file
 
 You'll need to create a homer configuration file at **/etc/homer/config.yaml**, contents should be similar to below.  The critical part is that the path beside 'public:' points to the "homer_public" directory inside the evpnlab dir cloned from here.
-```
+```yaml
 base_paths:
   # Base path of public configuration.
   public: /home/cathal/evpnlab/homer_public
