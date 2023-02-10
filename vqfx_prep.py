@@ -24,7 +24,7 @@ from time import sleep
 from pprintpp import pprint as pp
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-s', '--sshconfig', help='SSH config file', default='/home/cathal/.ssh/config')
+parser.add_argument('-s', '--sshconfig', help='SSH config file', default='~/.ssh/config')
 parser.add_argument('-u', '--user', help='User to add to devices', default='cathal')
 parser.add_argument('-k', '--key', help='SSH pubkey for user', default='ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH8GQKaT22CZdxJcpLNsq1LYm9bTeI7xnblYrrx8HXQH cathal@officepc')
 args = parser.parse_args()

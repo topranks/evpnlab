@@ -22,16 +22,10 @@ topology:
     server1:
       image: debian:clab
       kind: linux
-      binds:
-      - ~/.ssh/id_ed25519.pub:/root/.ssh/authorized_keys
     server2:
-      binds:
-      - ~/.ssh/id_ed25519.pub:/root/.ssh/authorized_keys
       image: debian:clab
       kind: linux
     server3:
-      binds:
-      - ~/.ssh/id_ed25519.pub:/root/.ssh/authorized_keys
       image: debian:clab
       kind: linux
 
