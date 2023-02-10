@@ -179,7 +179,7 @@ Ansible isn't used in this project, however the Ansible-provided 'ipaddr' filter
 
 TODO: Create fork of Homer which includes the ipaddr module
 
-For now you'll need to change Homer to import the ipaddr module and make it available to plugins.  To do so locate the "tempaltes.py" Homer file on your system and add this to the top:
+For now you'll need to change Homer to import the ipaddr module and make it usable in templates.  To do so locate the "tempaltes.py" Homer file on your system and add this to the top:
 
 ```python
 from ansible_collections.ansible.utils.plugins.filter import ipaddr
