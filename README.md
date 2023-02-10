@@ -186,7 +186,7 @@ xe-0/0/11.0             up    up   inet
 root@vqfx-re> 
 ```
 
-#### 8. Add JunOS user and SSH key to devices, and remove junk interface config
+#### 8. Run script to add user to JunOS devices
 
 To use Homer we need to have passwordless SSH working.  The username for the user should match your shell username on the system you are using.  You need to add an SSH pubkey which this user has already added (via 'ssh-keygen -t ed25519' for example).
 
