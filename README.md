@@ -165,7 +165,7 @@ Install WMF Homer and Ansible using pip:
 pip3 install homer ansible
 ```
 
-Ansible isn't used in this project, however the Ansible-provided 'ipaddr' filter for Jinja2 templating is used.  This is a very useful tool when using Homer with only YAML files (i.e. without the Netbox plugin or similar which can transform data in advance).
+Ansible isn't used in this project, however the Ansible-provided 'ipaddr' filter is used in some of the Jinja2 templates.  This is a very useful tool when using Homer with only YAML files (i.e. without the Netbox plugin or similar which can transform data in advance).
 
 TODO: Create fork of Homer which includes the ipaddr module
 
