@@ -246,4 +246,20 @@ eth0@if170       UP             172.20.20.2/24 2001:172:20:20::2/64 fe80::42:acf
 eth1@if201       UP             fe80::a8c1:abff:fe6f:256a/64 
 ```
 
-Interfaces, vlans or whatever can be configured using stardard ip command syntax.
+Interfaces, vlans or whatever can be configured using stardard ip command syntax.  For example:
+
+Server1:
+```
+ip addr add 198.18.100.11/24 dev eth1
+ip route add 198.18.0.0/16 via 198.18.100.254
+```
+Server2:
+```
+ip addr add 198.18.100.12/24 dev eth1
+ip route add 198.18.0.0/16 via 198.18.100.254
+```
+Server3:
+```
+ip addr add 198.18.200.13/24 dev eth1
+ip route add 198.18.0.0/16 via 198.18.200.254
+```
