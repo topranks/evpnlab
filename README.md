@@ -53,30 +53,7 @@ Either way the containerlab topology file will run an image called "**debian:cla
 
 Follow the instructions to [install containerlab](https://containerlab.dev/install/)
 
-#### 5. Install Homer
-
-Install WMF Homer and Ansible using pip:
-```
-pip3 install homer ansible
-```
-
-Ansible isn't used in this project, however the Ansible-provided 'ipaddr' filter for Jinja2 templating is used.  This is a very useful tool when using Homer only with YAML files (i.e. without the Netbox plugin or similar which can transform data in advance).
-
-TODO: Create fork of Homer which includes the ipaddr module
-
-For now you'll need to change Homer to import the ipaddr module and make it available to plugins.  To do so locate the "tempaltes.py" Homer file on your system and add this to the top:
-
-```python
-from ansible_collections.ansible.utils.plugins.filter import ipaddr
-```
-
-And then add this line at the end of the __init__ function in the Renderer class:
-
-```python
-        self._env.filters.update(ipaddr.FilterModule().filters())
-```
-
-#### 6. Clone this repo
+#### 5. Clone this repo
 
 Clone this repo to your machine:
 ```
@@ -84,7 +61,7 @@ git clone https://github.com/topranks/evpnlab.git
 cd evpnlab
 ```
 
-#### 7. Run the lab
+#### 6. Run the lab
 
 Before running the lab check the docker images look correct, you should at least have the two shown below:
 ```
@@ -155,34 +132,17 @@ xe-0/0/0                up    up
 xe-0/0/0.0              up    up   inet    
 ```
 
-#### 8. Run script to add user to JunOS devices
+#### 7. Run script to add user to JunOS devices
 
-To use Homer we need to have passwordless SSH working, so we need to add a user and SSH public key for them.  The username should be the same as on the local system where you're running homer.  That user should have an ed25519 ssh keypair generated in ~/.ssh/ already.
+To use Homer we need to have passwordless SSH working, so we need to add a user and SSH public key for them.  The username should be the same as on the local system where you're running homer.  That user will need an ed25519 ssh keypair in ~/.ssh/ already, if not create one with 'ssh-keygen -t ed25519'.
 
-The included script will add the user to the JunOS devices along with the public key (run 'sudo false' first just cos):
+The included script will add the user to the JunOS devices along with the public key:
 ```
-cathal@officepc:~/evpnlab$ sudo false
-[sudo] password for cathal: 
-cathal@officepc:~/evpnlab$ ./vqfx_prep.py --user cathal --key "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH8GQKaT22CZdxJcpLNsq1LYm9bTeI7xnblYrrx8HXQH cathal@officepc"
+cathal@officepc:~/evpnlab$ sudo ./vqfx_prep.py --user cathal --key "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH8GQKaT22CZdxJcpLNsq1LYm9bTeI7xnblYrrx8HXQH cathal@officepc"
 Trying to conenct to leaf1 at 172.20.20.8... connected.
 Adding user cathal with CLI... done.
 Trying to commit config change removing interfaces (wait 20 sec)...  done.
 
-Trying to conenct to leaf2 at 172.20.20.7... connected.
-Adding user cathal with CLI... done.
-Trying to commit config change removing interfaces (wait 20 sec)...  done.
-
-Trying to conenct to leaf3 at 172.20.20.6... connected.
-Adding user cathal with CLI... done.
-Trying to commit config change removing interfaces (wait 20 sec)...  done.
-
-Trying to conenct to spine1 at 172.20.20.9... connected.
-Adding user cathal with CLI... done.
-Trying to commit config change removing interfaces (wait 20 sec)...  done.
-
-Trying to conenct to spine2 at 172.20.20.3... connected.
-Adding user cathal with CLI... done.
-Trying to commit config change removing interfaces (wait 20 sec)...  done.
 ```
 
 NOTE: This takes a *long* time.  For some reason the Juniper [StartShell](https://www.juniper.net/documentation/us/en/software/junos-pyez/junos-pyez-developer/topics/task/junos-pyez-program-shell-accessing.html) takes ages to run on the vQFX, at least on my system.  But it works ok, I need to revisit to see why it goes so slow.
@@ -194,6 +154,31 @@ Last login: Fri Feb 10 11:49:46 2023 from 10.0.0.2
 --- JUNOS 19.4R1.10 built 2019-12-19 03:54:05 UTC
 {master:0}
 cathal@vqfx-re> 
+```
+
+At this point the lab is up and running, follow the next steps to add the config defined in the homer_public dir using Homer.
+
+#### 8. Install Homer
+
+Install WMF Homer and Ansible using pip:
+```
+pip3 install homer ansible
+```
+
+Ansible isn't used in this project, however the Ansible-provided 'ipaddr' filter is used in some of the Jinja2 templates.  This is a very useful tool when using Homer with only YAML files (i.e. without the Netbox plugin or similar which can transform data in advance).
+
+TODO: Create fork of Homer which includes the ipaddr module
+
+For now you'll need to change Homer to import the ipaddr module and make it available to plugins.  To do so locate the "tempaltes.py" Homer file on your system and add this to the top:
+
+```python
+from ansible_collections.ansible.utils.plugins.filter import ipaddr
+```
+
+And then add this line at the end of the __init__ function in the Renderer class:
+
+```python
+        self._env.filters.update(ipaddr.FilterModule().filters())
 ```
 
 #### 9. Add Homer confiuration file
