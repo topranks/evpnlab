@@ -134,9 +134,9 @@ xe-0/0/0.0              up    up   inet
 
 #### 7. Run script to add user to JunOS devices
 
-To use Homer we need to have passwordless SSH working, so we need to add a user and SSH public key for them.  The username should be the same as on the local system where you're running homer.  That user should have an ed25519 ssh keypair generated in ~/.ssh/ already.
+To use Homer we need to have passwordless SSH working, so we need to add a user and SSH public key for them.  The username should be the same as on the local system where you're running homer.  That user will need an ed25519 ssh keypair in ~/.ssh/ already, if not create one with 'ssh-keygen -t ed25519'.
 
-The included script will add the user to the JunOS devices along with the public key (run 'sudo false' first just cos):
+The included script will add the user to the JunOS devices along with the public key:
 ```
 cathal@officepc:~/evpnlab$ sudo ./vqfx_prep.py --user cathal --key "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH8GQKaT22CZdxJcpLNsq1LYm9bTeI7xnblYrrx8HXQH cathal@officepc"
 Trying to conenct to leaf1 at 172.20.20.8... connected.
