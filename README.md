@@ -60,11 +60,11 @@ Install WMF Homer and Ansible using pip:
 pip3 install homer ansible
 ```
 
-Ansible isn't used in this project, however the Ansible-provided 'ipaddr' filter for Jinja2 templating is used.  This is a very useful tool when using Homer only with YAML files (i.e. without the WMF Netbox plugin or similar which can transforms data in advance for use with templates).
+Ansible isn't used in this project, however the Ansible-provided 'ipaddr' filter for Jinja2 templating is used.  This is a very useful tool when using Homer only with YAML files (i.e. without the Netbox plugin or similar which can transform data in advance).
 
 TODO: Create fork of Homer which includes the ipaddr module
 
-Until that's done we need to change Homer to import the ipaddr module and make it available to plugins.  To do so locate the "tempaltes.py" Homer file on your system and add this to the top:
+For now you'll need to change Homer to import the ipaddr module and make it available to plugins.  To do so locate the "tempaltes.py" Homer file on your system and add this to the top:
 
 ```python
 from ansible_collections.ansible.utils.plugins.filter import ipaddr
@@ -86,7 +86,7 @@ cd evpnlab
 
 #### 7. Run the lab
 
-Before running the lab check the docker images are look correct, you should at least have two with names as shown below:
+Before running the lab check the docker images look correct, you should at least have the two shown below:
 ```
 root@debiantemp:~# docker images
 REPOSITORY           TAG             IMAGE ID       CREATED         SIZE
@@ -139,7 +139,7 @@ removed '/etc/hosts'
 renamed '/tmp/new_hosts' -> '/etc/hosts'
 ```
 
-The vQFX images take a few minutes to boot up.  It's best to wait for maybe 5 minutes before proceeding.  To ensure things are ready SSH into one of the vQFX nodes, and check that you can see the "xe-" interfaces (indicating PFE is connected).  Default pass for the vQFX root user is "Juniper".
+The vQFX VMs take a few minutes to boot and initialize.  It's best to wait for maybe 5 minutes before proceeding.  To check if a vQFX is ready you can SSH into it, and check that you can see the "xe-" interfaces (this indicates PFE is connected).  Default pass for the vQFX root user is "Juniper".
 ```
 cathal@officepc:~/evpnlab$ ssh root@leaf1
 (root@leaf1) Password:
@@ -153,16 +153,13 @@ root@vqfx-re>
 root@vqfx-re> show interfaces terse | match "xe-0/0/0" 
 xe-0/0/0                up    up
 xe-0/0/0.0              up    up   inet    
-
-{master:0}
-root@vqfx-re> 
 ```
 
 #### 8. Run script to add user to JunOS devices
 
-To use Homer we need to have passwordless SSH working.  The username for the user should match your shell username on the system you are using.  You need to add an SSH pubkey which this user has already added (via 'ssh-keygen -t ed25519' for example).
+To use Homer we need to have passwordless SSH working, so we need to add a user and SSH public key for them.  The username should be the same as on the local system where you're running homer.  That user should have an ed25519 ssh keypair generated in ~/.ssh/ already.
 
-The included script will do this (run 'sudo false' first just cos):
+The included script will add the user to the JunOS devices along with the public key (run 'sudo false' first just cos):
 ```
 cathal@officepc:~/evpnlab$ sudo false
 [sudo] password for cathal: 
