@@ -220,7 +220,7 @@ Address          Interface              State           ID               Pri  De
 10.1.2.0         xe-0/0/1.0             Full            2.2.2.2          128    36
 ```
 
-#### 5. Connect to servers
+## Connect to and configure servers
 
 To connect to any of the 'server' containers run bash in them with docker:
 ```
