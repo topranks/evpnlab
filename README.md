@@ -193,7 +193,7 @@ And then add this line at the end of the __init__ function in the Renderer class
 
 #### 3. Add Homer confiuration file
 
-You'll need to create a homer configuration file at **/etc/homer/config.yaml**, contents should be similar to below.  The critical part is that the path beside 'public:' points to the "homer_public" directory inside the evpnlab dir cloned from here.
+You'll need to create a homer configuration file at **/etc/homer/config.yaml**, contents should be similar to below.  The critical part is that the path beside 'public:' points to the "homer_public" directory inside the evpnlab dir cloned from this repo.
 ```yaml
 base_paths:
   # Base path of public configuration.
