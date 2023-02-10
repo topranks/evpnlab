@@ -30,12 +30,14 @@ topology:
       kind: linux
 
   links:
-    - endpoints: ["leaf1:eth1", "spine1:eth1"]
-    - endpoints: ["leaf1:eth2", "spine2:eth1"]
-    - endpoints: ["leaf2:eth1", "spine1:eth2"]
-    - endpoints: ["leaf2:eth2", "spine2:eth2"]
-    - endpoints: ["leaf3:eth1", "spine1:eth3"]
-    - endpoints: ["leaf3:eth2", "spine2:eth3"]
+    - endpoints: ["spine1:eth1", "leaf1:eth1"]
+    - endpoints: ["spine1:eth2", "leaf2:eth1"]
+    - endpoints: ["spine1:eth3", "leaf3:eth1"]
+
+    - endpoints: ["spine2:eth1", "leaf1:eth2"]
+    - endpoints: ["spine2:eth2", "leaf2:eth2"]
+    - endpoints: ["spine2:eth3", "leaf3:eth2"]
+
     - endpoints: ["server1:eth1", "leaf1:eth3"]
     - endpoints: ["server2:eth1", "leaf2:eth3"]
     - endpoints: ["server3:eth1", "leaf3:eth3"]
