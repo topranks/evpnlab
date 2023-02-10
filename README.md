@@ -230,7 +230,7 @@ cathal@vqfx-re>
 
 #### 9. Add Homer confiuration file
 
-You'll need to add a homer configuration file at **/etc/homer/config.yaml**, contents should be similar to below:
+You'll need to add a homer configuration file at **/etc/homer/config.yaml**, contents should be similar to below, the critical part is that the path beside 'public:' points to the "homer_public" directory inside the evpnlab dir cloned from here.
 ```
 base_paths:
   # Base path of public configuration.
