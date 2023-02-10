@@ -142,33 +142,7 @@ The 'eth1' interface in each container is mapped to 'xe-0/0/0' on the vQFX using
 
 ## Configure vQFX devices using Homer
 
-#### 1. Run script to add user to JunOS devices
-
-To use Homer we need to have passwordless SSH working, so we need to add a user and SSH public key for them.  The username should be the same as on the local system where you're running homer.  That user will need an ed25519 ssh keypair in ~/.ssh/ already, if not create one with 'ssh-keygen -t ed25519'.
-
-The included script will add the user to the JunOS devices along with the public key:
-```
-cathal@officepc:~/evpnlab$ sudo ./vqfx_prep.py --user cathal --key "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH8GQKaT22CZdxJcpLNsq1LYm9bTeI7xnblYrrx8HXQH cathal@officepc"
-Trying to conenct to leaf1 at 172.20.20.8... connected.
-Adding user cathal with CLI... done.
-Trying to commit config change removing interfaces (wait 20 sec)...  done.
-
-```
-
-NOTE: This takes a *long* time.  For some reason the Juniper [StartShell](https://www.juniper.net/documentation/us/en/software/junos-pyez/junos-pyez-developer/topics/task/junos-pyez-program-shell-accessing.html) takes ages to run on the vQFX, at least on my system.  But it works ok, I need to revisit to see why it goes so slow.
-
-Once done verify you can SSH on without a password as the user you added:
-```
-cathal@officepc:~/evpnlab$ ssh leaf1
-Last login: Fri Feb 10 11:49:46 2023 from 10.0.0.2
---- JUNOS 19.4R1.10 built 2019-12-19 03:54:05 UTC
-{master:0}
-cathal@vqfx-re> 
-```
-
-At this point the lab is up and running, follow the next steps to add the config defined in the homer_public dir using Homer.
-
-#### 2. Install Homer
+#### 1. Install Homer
 
 Install WMF Homer and Ansible using pip:
 ```
@@ -191,7 +165,7 @@ And then add this line at the end of the __init__ function in the Renderer class
         self._env.filters.update(ipaddr.FilterModule().filters())
 ```
 
-#### 3. Add Homer confiuration file
+#### 2. Add Homer confiuration file
 
 You'll need to create a homer configuration file at **/etc/homer/config.yaml**, contents should be similar to below.  The critical part is that the path beside 'public:' points to the "homer_public" directory inside the evpnlab dir cloned from this repo.
 ```yaml
@@ -210,6 +184,30 @@ transports:
       - statement must contain additional statements
       - statement has no contents
       - config will be applied to ports
+```
+
+#### 3. Set up JunOS user with ssh public key
+
+To use Homer we need to have passwordless SSH working, so we need to add a user and SSH public key for them.  The username should be the same as on the local system where you're running homer.  That user will need an ed25519 ssh keypair in ~/.ssh/ already, if not create one with 'ssh-keygen -t ed25519'.
+
+The included script will add the user to the JunOS devices along with the public key:
+```
+cathal@officepc:~/evpnlab$ sudo ./vqfx_prep.py --user cathal --key "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH8GQKaT22CZdxJcpLNsq1LYm9bTeI7xnblYrrx8HXQH cathal@officepc"
+Trying to conenct to leaf1 at 172.20.20.8... connected.
+Adding user cathal with CLI... done.
+Trying to commit config change removing interfaces (wait 20 sec)...  done.
+
+```
+
+NOTE: This takes a *long* time.  For some reason the Juniper [StartShell](https://www.juniper.net/documentation/us/en/software/junos-pyez/junos-pyez-developer/topics/task/junos-pyez-program-shell-accessing.html) takes ages to run on the vQFX, at least on my system.  But it works ok, I need to revisit to see why it goes so slow.
+
+Once done verify you can SSH on without a password as the user you added:
+```
+cathal@officepc:~/evpnlab$ ssh leaf1
+Last login: Fri Feb 10 11:49:46 2023 from 10.0.0.2
+--- JUNOS 19.4R1.10 built 2019-12-19 03:54:05 UTC
+{master:0}
+cathal@vqfx-re> 
 ```
 
 #### 4. Run Homer to add configuration to JunOS devices
