@@ -132,7 +132,7 @@ xe-0/0/0                up    up
 xe-0/0/0.0              up    up   inet    
 ```
 
-At this point the lab is up and running, and we can configure the nodes.
+**At this point the lab is up and running, and we can configure the nodes.**
 
 ### A note on interface naming
 
