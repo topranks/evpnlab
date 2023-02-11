@@ -6,7 +6,7 @@ This is a Juniper lab to test some EVPN/VXLAN stuff built using vQFX running on 
 
 ## Install & Run Lab
 
-The lab is designed to be run on Linux.  As it uses virtual machines to emualte the Juniper devices it is better running directly on bare metal, however it should in theory work in a VM - as long as nested virtualization is enabled.
+The lab is designed to be run on Linux.  As it uses virtual machines to emualte the Juniper devices it is better running directly on bare metal, however it should in theory work in a VM; as long as nested virtualization is enabled.
 
 #### 1. Install Docker
 
